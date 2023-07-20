@@ -1,12 +1,16 @@
 export interface Beverage {
   title: string;
   price: number;
-  prepTimeMs: number;
+  prepTime: number;
 }
 
 export enum CoffeeBarEvents {
-  BREAK = 'coffeeBar.takeABreak',
-  END_DAY = 'coffeeBar.endOfDay',
-  NEW_ORDER = 'coffeeBar.newOrder',
-  ORDER_PROCESSED = 'coffeeBar.orderProcessed',
+  START = 'start',
+  STOP = 'stop',
+  BREAK = 'takeABreak',
+  END_DAY = 'endOfDay',
+  NEW_ORDER = 'newOrder',
+  ORDER_PROCESSED = 'orderProcessed',
+  START_ORDER_PROCESS = 'startProcessingOrders',
+  STOP_ORDER_PROCESS = 'stopProcessingOrders',
 }

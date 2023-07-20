@@ -2,29 +2,31 @@ import EventEmitter from 'events';
 import { Beverage, CoffeeBarEvents } from '../../interfaces/coffee-bar';
 
 export class CoffeeBar extends EventEmitter {
-  private breakDuration: number;
-  private breakStartAfter: number;
-  private endTimeAfter: number;
-  private profit: number;
+  breakDuration: number;
+  profit: number;
   
   constructor() {
     super();
-    this.breakDuration = 5000;
-    this.breakStartAfter = 12000;
-    this.endTimeAfter = 45000;
     this.profit = 0;
   }
 
-  public start(): void {
-    this.processOrders();
+  start(): void {
+    this.emit(CoffeeBarEvents.START);
+    this.processOrderListener();
+  }
+
+  stop(): void {
+    this.emit(CoffeeBarEvents.STOP);
+    this.stopProcessOrderListener();
+  }
+  
+  takeBreak(duration: number): void {
+    this.emit(CoffeeBarEvents.BREAK);
+    this.stopProcessOrderListener();
     
     setTimeout(() => {
-      this.takeBreak(); // take a break
-    }, this.breakStartAfter);
-
-    setTimeout(() => {
-      this.stopProcessingOrders(); // end of working day
-    }, this.endTimeAfter);
+      this.processOrderListener();
+    }, duration);
   }
 
   private getPrepTime(prepTime: number): number {
@@ -32,31 +34,20 @@ export class CoffeeBar extends EventEmitter {
     return prepTime + deferTime;
   }
 
-  private processOrders(): void {
-    this.on(CoffeeBarEvents.NEW_ORDER, (beverage: Beverage) => {
-      console.log(`New order: ${beverage.title}`);
-  
-      setTimeout(() => {
-        // TODO: add execution time
-        console.log(`Order processed: ${beverage.title}`);
-        this.profit += beverage.price;
-        this.emit(CoffeeBarEvents.ORDER_PROCESSED);
-      }, this.getPrepTime(beverage.prepTimeMs));
-    });
-  }
-
-  private stopProcessingOrders() {
-    this.removeAllListeners(CoffeeBarEvents.NEW_ORDER);
-  }
-  
-  public takeBreak(): void {
-    console.log(`Taking a break for ${this.breakDuration}ms`);
-
-    this.emit(CoffeeBarEvents.BREAK);
-    this.stopProcessingOrders();
-    
+  newOrderCallback = (beverage: Beverage) => {        
     setTimeout(() => {
-      this.processOrders();
-    }, this.breakDuration);
+      this.profit += beverage.price;
+      this.emit(CoffeeBarEvents.ORDER_PROCESSED, beverage);
+    }, this.getPrepTime(beverage.prepTime));
+  };
+
+  private processOrderListener(): void {
+    this.emit(CoffeeBarEvents.START_ORDER_PROCESS);
+    this.on(CoffeeBarEvents.NEW_ORDER, this.newOrderCallback);
+  }
+
+  private stopProcessOrderListener() {
+    this.emit(CoffeeBarEvents.STOP_ORDER_PROCESS);
+    this.removeListener(CoffeeBarEvents.NEW_ORDER, this.newOrderCallback);
   }
 }

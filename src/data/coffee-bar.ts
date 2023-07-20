@@ -1,24 +1,24 @@
 import { Beverage } from "../interfaces/coffee-bar";
 
-export const CoffeeBarMenu: Beverage[] = [
+export const coffeeBarMenu: Beverage[] = [
   {
     title: 'Americano',
     price: 1.5,
-    prepTimeMs: 700
+    prepTime: 700
   },
   {
     title: 'Cappuccino',
     price: 3.5,
-    prepTimeMs: 1000,
+    prepTime: 1000,
   },
   {
     title: 'Espresso',
     price: 1,
-    prepTimeMs: 500,
+    prepTime: 500,
   },
   {
     title: 'Latte',
     price: 4.3,
-    prepTimeMs: 1500,
+    prepTime: 1500,
   }
 ];
