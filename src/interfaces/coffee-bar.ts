@@ -4,6 +4,12 @@ export interface Beverage {
   prepTime: number;
 }
 
+export interface Order { 
+  beverage: Beverage,
+  isVip: boolean,
+  prepTime: number
+}
+
 export enum CoffeeBarEvents {
   START = 'start',
   STOP = 'stop',

@@ -1,13 +1,31 @@
 import EventEmitter from 'events';
-import { Beverage, CoffeeBarEvents } from '../../interfaces/coffee-bar';
+import { CoffeeBarEvents, Order } from '../../interfaces/coffee-bar';
 
 export class CoffeeBar extends EventEmitter {
   breakDuration: number;
   profit: number;
-  
+  breakTimeAfter: number;
+  endTimeAfter: number;
+
   constructor() {
     super();
+    
+    this.breakDuration = 5000;
+    this.breakTimeAfter = 12000;
+    this.endTimeAfter = 45000;
     this.profit = 0;
+  }
+  
+  run(): void {
+    this.start(); // open the CoffeeBar
+
+    setTimeout(() => { // take a break after 12 sec
+      this.takeBreak(this.breakDuration);
+    }, this.breakTimeAfter);
+
+    setTimeout(() => { // end of working day after 45 sec
+      this.stop();
+    }, this.endTimeAfter);
   }
 
   start(): void {
@@ -29,16 +47,19 @@ export class CoffeeBar extends EventEmitter {
     }, duration);
   }
 
-  private getPrepTime(prepTime: number): number {
-    const deferTime = Math.ceil(Math.random() * 1000);
-    return prepTime + deferTime;
+  orderPrepared (order: Order) {
+    this.profit += order.beverage.price;
+    this.emit(CoffeeBarEvents.ORDER_PROCESSED, order);
   }
 
-  newOrderCallback = (beverage: Beverage) => {        
+  newOrderCallback = (order: Order) => {
     setTimeout(() => {
-      this.profit += beverage.price;
-      this.emit(CoffeeBarEvents.ORDER_PROCESSED, beverage);
-    }, this.getPrepTime(beverage.prepTime));
+      if(order.isVip) {
+        process.nextTick(() => this.orderPrepared(order));
+      } else {
+        setImmediate(() => this.orderPrepared(order))
+      }
+    }, order.prepTime);
   };
 
   private processOrderListener(): void {

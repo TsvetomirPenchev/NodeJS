@@ -19,31 +19,25 @@ before the program exits.
 **Bonus requirement**: 
 Throughout the day there is a small (10%)  chance for a VIP client 
 to show up. Their orders should be processed with a priority (coffee preparation time
-  stays the same). They leave a 30% tip for the coffee.** */
+  stays the same). They leave a 30% tip for the coffee.** 
+*/
 
 import { coffeeBarMenu } from "../../data/coffee-bar";
-import { Beverage, CoffeeBarEvents } from "../../interfaces/coffee-bar";
+import { CoffeeBarEvents, Order } from "../../interfaces/coffee-bar";
 import { CoffeeBar } from "../coffee-bar";
 
 export class CoffeeClientSimulator {
   coffeeBar: CoffeeBar;
   orderTimer: NodeJS.Timeout;
-  breakTimeAfter: number;
-  endTimeAfter: number;
-  breakDuration: number;
 
-  constructor() {
-    this.coffeeBar = new CoffeeBar();
-    this.breakDuration = 5000;
-    this.breakTimeAfter = 12000;
-    this.endTimeAfter = 45000;
-
+  constructor(coffeeBar: CoffeeBar) {
+    this.coffeeBar = coffeeBar; 
     this.attachEventListeners();
   }
 
   attachEventListeners() {
     this.coffeeBar.on(CoffeeBarEvents.START, () => {  
-      console.log(`=== CoffeeBar opened for ${this.endTimeAfter/1000} sec ===`);
+      console.log(`=== CoffeeBar opened ===`);
     });
 
     this.coffeeBar.on(CoffeeBarEvents.START_ORDER_PROCESS, () => {  
@@ -56,47 +50,47 @@ export class CoffeeClientSimulator {
       clearTimeout(this.orderTimer);
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.NEW_ORDER, (beverage: Beverage) => {  
-      console.log(`New order: ${beverage.title}`)
+    this.coffeeBar.on(CoffeeBarEvents.NEW_ORDER, (order: Order) => {  
+      console.log(`New ${order.isVip ? 'VIP ' : ''}order: ${order.beverage.title}`)
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.ORDER_PROCESSED, (beverage: Beverage) => {  
-      console.log(`Order processed: ${beverage.title}`)
+    this.coffeeBar.on(CoffeeBarEvents.ORDER_PROCESSED, (order: Order) => {  
+      console.log(`${order.isVip ? 'VIP ' : ''}Order processed(${(order.prepTime/1000).toFixed(2)} s): ${order.beverage.title}`)
     });
 
     this.coffeeBar.on(CoffeeBarEvents.BREAK, () => {  
-      console.log(`=== Taking a break for ${this.breakDuration/1000} sec ===`);
+      console.log(`=== Taking a break ===`);
       clearTimeout(this.orderTimer);
     });
 
     this.coffeeBar.on(CoffeeBarEvents.STOP, () => {  
-      console.log(`=== End of working day ===`);
+      console.log(`=== End of working day. Profit: $${this.coffeeBar.profit.toFixed(2)} ===`);
       clearTimeout(this.orderTimer);
     });
   }
 
-  public run(): void {
-    this.coffeeBar.start(); // open the CoffeeBar
+  private pickOrder = (isVip = false): Order => {
+    const beverage = coffeeBarMenu[Math.floor(Math.random() * coffeeBarMenu.length)];
 
-    setTimeout(() => { // take a break after 12 sec
-      this.coffeeBar.takeBreak(this.breakDuration);
-    }, this.breakTimeAfter);
-
-    setTimeout(() => { // end of working day after 45 sec
-      this.coffeeBar.stop();
-    }, this.endTimeAfter);
-  }
-
-  private pickBeverage = (): Beverage => {
-    return coffeeBarMenu[Math.floor(Math.random() * coffeeBarMenu.length)]
+    return { 
+      beverage,
+      isVip,
+      prepTime: beverage.prepTime + Math.ceil(Math.random() * 1000), 
+    }
   }
 
   public scheduleOrders = () => {
     const timeToNextOrder = Math.floor(Math.random() * 5000) + 1000; // Random time between 1 and 5 seconds
 
     this.orderTimer = setTimeout(() => {
-      const order = this.pickBeverage();
-      this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, order);
+      // 10% chance for a VIP client to show up
+      if (Math.random() <= 0.1) {
+        const order = this.pickOrder(true);
+        order.beverage.price *= 1.3; // 30% tip
+        this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, order);
+      }
+
+      this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, this.pickOrder());
       this.scheduleOrders();
     }, timeToNextOrder);
   }
