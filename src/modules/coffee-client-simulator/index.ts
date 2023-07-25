@@ -25,6 +25,7 @@ to show up. Their orders should be processed with a priority (coffee preparation
 import { coffeeBarMenu } from "../../data/coffee-bar";
 import { CoffeeBarEvents, Order } from "../../interfaces/coffee-bar";
 import { CoffeeBar } from "../coffee-bar";
+import { randomNumber } from "../utils/numbers";
 
 export class CoffeeClientSimulator {
   coffeeBar: CoffeeBar;
@@ -82,32 +83,38 @@ export class CoffeeClientSimulator {
     });
   }
 
-  private pickOrder = (isVip = false): Order => {
-    const beverage =
-      coffeeBarMenu[Math.floor(Math.random() * coffeeBarMenu.length)];
+  private sendOrder = (qty: number, isVip: boolean = false) => {
+    if (qty <= 0) {
+      return;
+    }
 
+    const beverage = coffeeBarMenu[randomNumber(0, coffeeBarMenu.length - 1)];
     if (isVip) beverage.price *= 1.3; // 30% tip
 
-    return {
+    const order: Order = {
       id: ++this.orderId,
       beverage,
       isVip,
-      prepTime: beverage.prepTime + Math.ceil(Math.random() * 1000),
+      prepTime: beverage.prepTime + randomNumber(-500, 500),
     };
+
+    this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, order);
+    this.sendOrder(qty - 1, isVip);
   };
 
-  public scheduleOrders = () => {
-    const timeToNextOrder = Math.floor(Math.random() * 5000) + 1000; // Random time between 1 and 5 seconds
+  getQty(): number {
+    return randomNumber(1, 5);
+  }
 
+  public scheduleOrders = () => {
     this.orderTimer = setTimeout(() => {
       // 10% chance for a VIP client to show up
       if (Math.random() <= 0.1) {
-        const order = this.pickOrder(true);
-        this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, order);
+        this.sendOrder(this.getQty(), true);
       }
 
-      this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, this.pickOrder());
+      this.sendOrder(this.getQty());
       this.scheduleOrders();
-    }, timeToNextOrder);
+    }, randomNumber(1000, 5000)); // Random time between 1 and 5 seconds
   };
 }
