@@ -4,19 +4,19 @@ export interface Beverage {
   prepTime: number;
 }
 
-export interface Order { 
-  beverage: Beverage,
-  isVip: boolean,
-  prepTime: number
+export interface Order {
+  beverage: Beverage;
+  isVip: boolean;
+  prepTime: number;
 }
 
 export enum CoffeeBarEvents {
-  START = 'start',
-  STOP = 'stop',
-  BREAK = 'takeABreak',
-  END_DAY = 'endOfDay',
-  NEW_ORDER = 'newOrder',
-  ORDER_PROCESSED = 'orderProcessed',
-  START_ORDER_PROCESS = 'startProcessingOrders',
-  STOP_ORDER_PROCESS = 'stopProcessingOrders',
+  START = "start",
+  STOP = "stop",
+  BREAK = "takeABreak",
+  END_DAY = "endOfDay",
+  NEW_ORDER = "newOrder",
+  ORDER_PROCESSED = "orderProcessed",
+  START_ORDER_PROCESS = "startProcessingOrders",
+  STOP_ORDER_PROCESS = "stopProcessingOrders",
 }

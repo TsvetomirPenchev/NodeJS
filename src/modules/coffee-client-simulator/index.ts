@@ -31,53 +31,64 @@ export class CoffeeClientSimulator {
   orderTimer: NodeJS.Timeout;
 
   constructor(coffeeBar: CoffeeBar) {
-    this.coffeeBar = coffeeBar; 
+    this.coffeeBar = coffeeBar;
     this.attachEventListeners();
   }
 
   attachEventListeners() {
-    this.coffeeBar.on(CoffeeBarEvents.START, () => {  
+    this.coffeeBar.on(CoffeeBarEvents.START, () => {
       console.log(`=== CoffeeBar opened ===`);
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.START_ORDER_PROCESS, () => {  
+    this.coffeeBar.on(CoffeeBarEvents.START_ORDER_PROCESS, () => {
       console.log(`Processing orders listener started`);
       this.scheduleOrders();
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.STOP_ORDER_PROCESS, () => {  
+    this.coffeeBar.on(CoffeeBarEvents.STOP_ORDER_PROCESS, () => {
       console.log(`Processing orders listener removed`);
       clearTimeout(this.orderTimer);
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.NEW_ORDER, (order: Order) => {  
-      console.log(`New ${order.isVip ? 'VIP ' : ''}order: ${order.beverage.title}`)
+    this.coffeeBar.on(CoffeeBarEvents.NEW_ORDER, (order: Order) => {
+      console.log(
+        `New ${order.isVip ? "VIP " : ""}order: ${order.beverage.title}`
+      );
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.ORDER_PROCESSED, (order: Order) => {  
-      console.log(`${order.isVip ? 'VIP ' : ''}Order processed(${(order.prepTime/1000).toFixed(2)} s): ${order.beverage.title}`)
+    this.coffeeBar.on(CoffeeBarEvents.ORDER_PROCESSED, (order: Order) => {
+      console.log(
+        `${order.isVip ? "VIP " : ""}Order processed(${(
+          order.prepTime / 1000
+        ).toFixed(2)} s): ${order.beverage.title}`
+      );
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.BREAK, () => {  
+    this.coffeeBar.on(CoffeeBarEvents.BREAK, () => {
       console.log(`=== Taking a break ===`);
       clearTimeout(this.orderTimer);
     });
 
-    this.coffeeBar.on(CoffeeBarEvents.STOP, () => {  
-      console.log(`=== End of working day. Profit: $${this.coffeeBar.profit.toFixed(2)} ===`);
+    this.coffeeBar.on(CoffeeBarEvents.STOP, () => {
+      console.log(
+        `=== End of working day. Profit: $${this.coffeeBar.profit.toFixed(
+          2
+        )} ===`
+      );
       clearTimeout(this.orderTimer);
     });
   }
 
   private pickOrder = (isVip = false): Order => {
-    const beverage = coffeeBarMenu[Math.floor(Math.random() * coffeeBarMenu.length)];
+    const beverage =
+      coffeeBarMenu[Math.floor(Math.random() * coffeeBarMenu.length)];
 
-    return { 
+    return {
       beverage,
       isVip,
-      prepTime: beverage.prepTime + Math.ceil(Math.random() * 1000), 
-    }
-  }
+      prepTime: beverage.prepTime + Math.ceil(Math.random() * 1000),
+    };
+  };
 
   public scheduleOrders = () => {
     const timeToNextOrder = Math.floor(Math.random() * 5000) + 1000; // Random time between 1 and 5 seconds
@@ -93,5 +104,5 @@ export class CoffeeClientSimulator {
       this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, this.pickOrder());
       this.scheduleOrders();
     }, timeToNextOrder);
-  }
+  };
 }
