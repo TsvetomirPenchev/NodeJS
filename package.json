@@ -1,7 +1,7 @@
 {
   "name": "coffee-bar",
   "version": "1.0.0",
-  "description": "",
+  "description": "Coffee Bar task",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.ts",
@@ -9,7 +9,7 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [],
-  "author": "",
+  "author": "Tsvetomir Penchev <tsvetomir.penchev@mentormate.com>",
   "license": "ISC",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.2.0",
