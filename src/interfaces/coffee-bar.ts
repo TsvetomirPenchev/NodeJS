@@ -5,9 +5,10 @@ export interface Beverage {
 }
 
 export interface Order {
-  beverage: Beverage;
+  id: number;
   isVip: boolean;
   prepTime: number;
+  beverage: Beverage;
 }
 
 export enum CoffeeBarEvents {

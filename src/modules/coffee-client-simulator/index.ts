@@ -29,6 +29,7 @@ import { CoffeeBar } from "../coffee-bar";
 export class CoffeeClientSimulator {
   coffeeBar: CoffeeBar;
   orderTimer: NodeJS.Timeout;
+  orderId: number = 0;
 
   constructor(coffeeBar: CoffeeBar) {
     this.coffeeBar = coffeeBar;
@@ -52,13 +53,15 @@ export class CoffeeClientSimulator {
 
     this.coffeeBar.on(CoffeeBarEvents.NEW_ORDER, (order: Order) => {
       console.log(
-        `New ${order.isVip ? "VIP " : ""}order: ${order.beverage.title}`
+        `New ${order.isVip ? "VIP " : ""}order #${order.id}: ${
+          order.beverage.title
+        }`
       );
     });
 
     this.coffeeBar.on(CoffeeBarEvents.ORDER_PROCESSED, (order: Order) => {
       console.log(
-        `${order.isVip ? "VIP " : ""}Order processed(${(
+        `${order.isVip ? "VIP " : ""}Order #${order.id} processed(${(
           order.prepTime / 1000
         ).toFixed(2)} s): ${order.beverage.title}`
       );
@@ -83,7 +86,10 @@ export class CoffeeClientSimulator {
     const beverage =
       coffeeBarMenu[Math.floor(Math.random() * coffeeBarMenu.length)];
 
+    if (isVip) beverage.price *= 1.3; // 30% tip
+
     return {
+      id: ++this.orderId,
       beverage,
       isVip,
       prepTime: beverage.prepTime + Math.ceil(Math.random() * 1000),
@@ -97,7 +103,6 @@ export class CoffeeClientSimulator {
       // 10% chance for a VIP client to show up
       if (Math.random() <= 0.1) {
         const order = this.pickOrder(true);
-        order.beverage.price *= 1.3; // 30% tip
         this.coffeeBar.emit(CoffeeBarEvents.NEW_ORDER, order);
       }
 
