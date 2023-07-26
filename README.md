@@ -6,7 +6,7 @@ It is enough to make a GET request to the google translate URL and process the b
 Example:  
 [https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=Beware+of+heard+a+dreadful+word+that+looks+like+beard+and+sounds+like+bird](https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=Beware+of+heard+a+dreadful+word+that+looks+like+beard+and+sounds+like+bird)
 
-## Running the app
+## Install Node modules
 
 ```bash
 npm install
