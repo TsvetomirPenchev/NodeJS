@@ -1,8 +1,8 @@
 {
-  "name": "text-to-mp3",
+  "name": "text-to-speech",
   "version": "1.0.0",
   "description": "Convert text to speech",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon index.js",
     "lint": "eslint \"src/**/*.ts\" --fix",
