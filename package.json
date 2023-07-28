@@ -4,7 +4,7 @@
   "description": "Convert text to speech",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\""
   },
