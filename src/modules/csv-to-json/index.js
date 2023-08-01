@@ -11,12 +11,10 @@ module.exports = class CsvToJsonTransformer extends Transform {
   _transform(chunk, encoding, callback) {
     const lines = chunk.toString().split('\n');
 
-    // If this is the first chunk, extract headers
     if (this.firstChunk) {
       this.headers = lines.shift().split(this.separator);
     }
 
-    // Process each line and convert to JSON
     lines.forEach((line) => {
       if (line.trim() === '') return;
 
