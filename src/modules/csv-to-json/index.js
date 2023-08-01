@@ -5,13 +5,16 @@ module.exports = class CsvToJsonTransformer extends Transform {
     super(options);
     this.separator = options?.separator || ',';
     this.headers = null;
+    this.firstChunk = true;
+
+    this.push('[');
   }
 
   _transform(chunk, encoding, callback) {
     const lines = chunk.toString().split('\n');
 
     // If this is the first chunk, extract headers
-    if (!this.headers) {
+    if (this.firstChunk) {
       this.headers = lines.shift().split(this.separator);
     }
 
@@ -25,8 +28,20 @@ module.exports = class CsvToJsonTransformer extends Transform {
         object[this.headers[i]] = values[i];
       }
 
-      this.push(`${JSON.stringify(object)}\n`);
+      if (this.firstChunk) {
+        this.firstChunk = false;
+      } else {
+        this.push(',');
+      }
+
+      this.push(`${JSON.stringify(object)}`);
     });
+
+    callback();
+  }
+
+  _flush(callback) {
+    this.push(']');
 
     callback();
   }
