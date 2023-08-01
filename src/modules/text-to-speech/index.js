@@ -52,14 +52,14 @@ module.exports = class TextToSpeechConverter {
     const day = currentDate.getDate().toString();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
 
-    return `${year}-${month}-${day}-${cleanedText}.mp3`;
+    return path.resolve('output', `${year}-${month}-${day}-${cleanedText}.mp3`);
   }
 
   saveDataToFile(audioData) {
     return new Promise((resolve, reject) => {
-      const filename = `${path.resolve('output', this.getFileName())}`;
+      const filename = this.getFileName();
 
-      fs.writeFile(filename, audioData, 'binary', (error) => {
+      fs.writeFile(filename, audioData, (error) => {
         if (error) {
           reject(error);
         }
