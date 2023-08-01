@@ -6,8 +6,6 @@ module.exports = class CsvToJsonTransformer extends Transform {
     this.separator = options?.separator || ',';
     this.headers = null;
     this.firstChunk = true;
-
-    this.push('[');
   }
 
   _transform(chunk, encoding, callback) {
@@ -29,6 +27,7 @@ module.exports = class CsvToJsonTransformer extends Transform {
       }
 
       if (this.firstChunk) {
+        this.push('[');
         this.firstChunk = false;
       } else {
         this.push(',');
