@@ -9,6 +9,7 @@ const users = [];
 // NODE_ENV=production node --prof app.js
 
 app.get("/file", (req, res) => {
+  res.set("Cache-Control", "no-store");
   const text = fs.readFileSync("text.txt");
 
   res.set("Content-Type", "text/html");
@@ -16,10 +17,15 @@ app.get("/file", (req, res) => {
 });
 
 app.get("/fileStream", (req, res) => {
-  const stream = fs.createReadStream("text.txt");
-
+  res.set("Cache-Control", "no-store");
   res.set("Content-Type", "text/html");
-  stream.pipe(res);
+
+  // const stream = fs.createReadStream("text.txt");
+  // stream.pipe(res);
+
+  fs.readFile("text.txt", (err, data) => {
+    res.send(data);
+  });
 });
 
 app.listen(PORT, function (err) {
