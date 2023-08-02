@@ -1,61 +1,32 @@
-const crypto = require("crypto");
 const express = require("express");
+const fs = require("fs");
 const app = express();
 const PORT = 8080;
 
 const users = [];
 
-// curl -X GET "http://3.120.206.144:8080/newUser?username=matt&password=password"
-// .\ab -k -c 20 -n 300 "http://3.120.206.144:8080/auth?username=matt&password=password"
+// .\ab -k -c 20 -n 300 "http://3.120.206.144:8080/file"
 // NODE_ENV=production node --prof app.js
 
-app.get("/newUser", (req, res) => {
-  let username = req.query.username || "";
-  const password = req.query.password || "";
+app.get("/file", (req, res) => {
+  const text = fs.readFileSync("text.txt");
 
-  username = username.replace(/[!@#$%^&*]/g, "");
-
-  if (!username || !password || users[username]) {
-    return res.sendStatus(400);
-  }
-
-  const salt = crypto.randomBytes(128).toString("base64");
-  const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512");
-
-  users[username] = { salt, hash };
-
-  res.sendStatus(200);
+  res.set("Content-Type", "text/html");
+  res.send(text);
 });
 
-app.get("/auth", (req, res) => {
-  let username = req.query.username || "";
-  const password = req.query.password || "";
+app.get("/fileStream", (req, res) => {
+  res.set("Content-Type", "text/html");
 
-  username = username.replace(/[!@#$%^&*]/g, "");
+  const stream = fs.createReadStream("text.txt");
+  stream.pipe(res);
+});
 
-  if (!username || !password || !users[username]) {
-    return res.sendStatus(400);
-  }
+app.get("/fileSync", (req, res) => {
+  res.set("Content-Type", "text/html");
 
-  const { salt, hash } = users[username];
-
-  // sync
-  const encryptHash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512");
-
-  if (crypto.timingSafeEqual(hash, encryptHash)) {
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(401);
-  }
-
-  // async
-  // crypto.pbkdf2(password, salt, 10000, 512, "sha512", (err, hashResult) => {
-  //   if (hash.toString() === hashResult.toString()) {
-  //     res.sendStatus(200);
-  //   } else {
-  //     res.sendStatus(401);
-  //   }
-  // });
+  const stream = fs.createReadStream("text.txt");
+  stream.pipe(res);
 });
 
 app.listen(PORT, function (err) {
