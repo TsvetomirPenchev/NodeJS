@@ -5,8 +5,8 @@ const PORT = 8080;
 
 const users = [];
 
-// curl -X GET "http://localhost:8080/newUser?username=matt&password=password"
-// .\ab -k -c 20 -n 100 "http://localhost:8080/auth?username=matt&password=password"
+// curl -X GET "http://3.71.80.134:8080/newUser?username=matt&password=password"
+// .\ab -k -c 20 -n 300 "http://3.71.80.134:8080/auth?username=matt&password=password"
 
 app.get("/newUser", (req, res) => {
   let username = req.query.username || "";
@@ -37,22 +37,24 @@ app.get("/auth", (req, res) => {
   }
 
   const { salt, hash } = users[username];
-  // const encryptHash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512");
 
-  crypto.pbkdf2(
-    password,
-    users[username].salt,
-    10000,
-    512,
-    "sha512",
-    (err, hash) => {
-      if (users[username].hash.toString() === hash.toString()) {
-        res.sendStatus(200);
-      } else {
-        res.sendStatus(401);
-      }
-    }
-  );
+  // sync
+  const encryptHash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512");
+
+  if (crypto.timingSafeEqual(hash, encryptHash)) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(401);
+  }
+
+  // async
+  // crypto.pbkdf2(password, salt, 10000, 512, "sha512", (err, hashResult) => {
+  //   if (hash.toString() === hashResult.toString()) {
+  //     res.sendStatus(200);
+  //   } else {
+  //     res.sendStatus(401);
+  //   }
+  // });
 });
 
 app.listen(PORT, function (err) {
