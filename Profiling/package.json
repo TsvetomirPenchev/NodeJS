@@ -1,0 +1,16 @@
+{
+  "name": "profiling",
+  "version": "1.0.0",
+  "description": "profiling",
+  "main": "app.js",
+  "scripts": {
+    "watch": "nodemon app.js",
+    "start": "NODE_ENV=production node --prof app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
