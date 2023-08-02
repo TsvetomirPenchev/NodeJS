@@ -5,8 +5,9 @@ const PORT = 8080;
 
 const users = [];
 
-// curl -X GET "http://3.71.80.134:8080/newUser?username=matt&password=password"
-// .\ab -k -c 20 -n 300 "http://3.71.80.134:8080/auth?username=matt&password=password"
+// curl -X GET "http://3.120.206.144:8080/newUser?username=matt&password=password"
+// .\ab -k -c 20 -n 300 "http://3.120.206.144:8080/auth?username=matt&password=password"
+// NODE_ENV=production node --prof app.js
 
 app.get("/newUser", (req, res) => {
   let username = req.query.username || "";
