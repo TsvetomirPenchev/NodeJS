@@ -18,11 +18,32 @@ module.exports = class CsvToJsonTransformer extends Transform {
     lines.forEach((line) => {
       if (line.trim() === '') return;
 
-      const values = line.split(this.separator);
-      const object = {};
-      for (let i = 0; i < this.headers.length; i += 1) {
-        object[this.headers[i]] = values[i];
+      let inQuotes = false;
+      let object = {};
+      let currentField = '';
+      let headersCn = 0;
+
+      for (let i = 0; i < line.length; i += 1) {
+        const char = line[i];
+
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === this.separator && !inQuotes) {
+          object = {
+            ...object,
+            [this.headers[headersCn]]: currentField,
+          };
+          currentField = '';
+          headersCn += 1;
+        } else {
+          currentField += char;
+        }
       }
+
+      object = {
+        ...object,
+        [this.headers[headersCn]]: currentField,
+      };
 
       if (this.firstChunk) {
         this.push('[');
