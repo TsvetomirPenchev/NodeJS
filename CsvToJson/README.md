@@ -17,5 +17,5 @@ npm install
 ## Running the app
 
 ```bash
-npm run start --file filename
+node app.js --file=addresses
 ```

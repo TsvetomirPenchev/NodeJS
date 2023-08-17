@@ -1,8 +1,10 @@
 module.exports.getCommandLineArgument = (argName) => {
-  const argIndex = process.argv.indexOf(argName);
+  const pattern = `--${argName}=`;
+  const regex = new RegExp(pattern);
+  const argument = process.argv.slice(2).filter((item) => regex.test(item));
 
-  if (argIndex !== -1 && argIndex + 1 < process.argv.length) {
-    return process.argv[argIndex + 1];
+  if (argument.length > 0) {
+    return argument[0].replace(pattern, '');
   }
 
   return null;

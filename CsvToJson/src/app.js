@@ -5,8 +5,11 @@ const { getCommandLineArgument } = require('./utils/cl');
 
 const csvToJsonTransformer = new CsvToJsonTransformer();
 
-const fileName = getCommandLineArgument('--file');
-const filePath = path.join('data', `${fileName}.csv`);
+const rootPath = path.resolve(__dirname, '..');
+const fileName = getCommandLineArgument('file');
+const filePath = path.join(rootPath, 'data', `${fileName}.csv`);
+const outputPath = path.join(rootPath, 'output', `${fileName}.json`);
+
 access(filePath, F_OK, (err) => {
   if (err) {
     console.error('File does not exist!');
@@ -15,6 +18,6 @@ access(filePath, F_OK, (err) => {
 
   createReadStream(filePath)
     .pipe(csvToJsonTransformer)
-    .pipe(createWriteStream(path.join('output', `${fileName}.json`)))
+    .pipe(createWriteStream(outputPath))
     .on('error', (error) => console.error('Error reading the file:', error));
 });
