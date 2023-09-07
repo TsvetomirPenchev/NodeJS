@@ -1,0 +1,117 @@
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#lobby-holder {
+  width: 500px;
+  margin: 50px  auto;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 36px;
+  color: #0074D9;
+}
+
+#player-name, #opponent-name {
+  font-weight: bold;
+  color: #0074D9;
+}
+
+#play, #play-again {
+  background-color: #FF4136;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s; 
+}
+
+#play:hover {
+  background-color: #E50000;
+}
+
+#waiting-msg {
+  color: #888;
+  font-style: italic;
+  display: none;
+}
+
+#player-list {
+  list-style: none;
+  padding: 0;
+}
+
+#player-list li {
+  margin: 5px 0;
+  color: #333;
+}
+
+#board-holder {
+  margin-top: 20px;
+  height: auto;
+  width: 330px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+#symbol, #opponent-symbol {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  margin-top: 20px;
+}
+
+.cell {
+  border: 1px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  font-size: 50px;
+  cursor: pointer;
+  width: 100px;
+  height: 100px;
+}
+
+#go-to-lobby {
+  background-color: #0074D9;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#go-to-lobby:hover {
+  background-color: #005BA3;
+}
+
+#message {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+p {
+  margin: 10px 0;
+}

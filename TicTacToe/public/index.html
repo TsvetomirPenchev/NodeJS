@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="style.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div id="lobby-holder">
+            <h1>Lobby</h1>
+            
+            <button id="play">Play</button>
+
+            <p id="waiting-msg">Waiting for other players...</p>
+            <h2>Available Players:</h2>
+            
+            <ul id="player-list"></ul>
+        </div>
+        
+        <div id="board-holder" hidden>
+            <p>Your name: <span id="player-name"></span></p>
+            <p>Your Symbol: <span id="symbol"></span></p>
+            
+            <p>Opponent name: <span id="opponent-name"></span></p>
+            <p>Opponent Symbol: <span id="opponent-symbol"></span></p>
+
+            <div class="board">
+                <button class="cell" id="a0"></button>
+                <button class="cell" id="a1"></button>
+                <button class="cell" id="a2"></button>
+                <button class="cell" id="b0"></button>
+                <button class="cell" id="b1"></button>
+                <button class="cell" id="b2"></button>
+                <button class="cell" id="c0"></button>
+                <button class="cell" id="c1"></button>
+                <button class="cell" id="c2"></button>
+            </div>
+
+            <p id="message"></p>
+            <button id="go-to-lobby">Go to Lobby</button>
+            <button id="play-again" hidden>Play again</button>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
